@@ -15,9 +15,11 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to fetch data",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
