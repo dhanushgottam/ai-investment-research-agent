@@ -1,23 +1,47 @@
-import { NextResponse } from "next/server";
-import yahooFinance from "yahoo-finance2";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+import { investmentGraph } from "@/graph/investmentGraph";
+
+export async function POST(request: NextRequest) {
   try {
-    const quote = await yahooFinance.quote("AAPL");
+    const body = await request.json();
+
+    const { ticker } = body;
+
+    if (!ticker) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Ticker is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const result = await investmentGraph.invoke({
+      ticker: ticker.toUpperCase(),
+    });
 
     return NextResponse.json({
       success: true,
-      data: quote,
+      data: result,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Research API Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to fetch data",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Internal Server Error",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }

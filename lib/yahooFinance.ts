@@ -1,14 +1,14 @@
-import yahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
+
+const yahooFinance = new YahooFinance();
 
 export async function getCompanyFinancialData(symbol: string) {
   try {
-    const quote = await yahooFinance.quote(symbol);
-
-    console.log(quote);
+  const quote = await yahooFinance.quote(symbol);
 
     return quote;
   } catch (error) {
-    console.error(error);
+    console.error("Yahoo Finance Error:", error);
     throw error;
   }
 }

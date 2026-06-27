@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import yahooFinance from "yahoo-finance2";
+import { getCompanyFinancialData } from "@/lib/yahooFinance";
 
 export async function GET() {
   try {
-    const quote = await yahooFinance.quote("AAPL");
+    const quote = await getCompanyFinancialData("AAPL");
 
     return NextResponse.json({
       success: true,

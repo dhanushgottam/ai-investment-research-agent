@@ -1,61 +1,86 @@
-// ============================================================================
-// Company Information
-// ============================================================================
+import { Annotation } from "@langchain/langgraph";
+
+/* ============================
+   Company Profile
+============================ */
 
 export interface CompanyProfile {
-  name: string;
-  ticker: string;
-  sector: string;
-  industry: string;
-  description: string;
+  symbol?: string;
+  shortName?: string;
+  longName?: string;
+  exchange?: string;
+  currency?: string;
+
+  marketCap?: number;
+  trailingPE?: number;
+  epsTrailingTwelveMonths?: number;
+
+  [key: string]: unknown;
 }
 
-// ============================================================================
-// Financial Information
-// ============================================================================
+/* ============================
+   Financial Data
+============================ */
 
 export interface FinancialData {
   marketCap: number;
-  revenue: number;
-  netIncome: number;
   peRatio: number;
   eps: number;
-  debtToEquity: number;
+
+  revenue?: number;
+  netIncome?: number;
+  debtToEquity?: number;
 }
 
-// ============================================================================
-// Web Research
-// ============================================================================
+/* ============================
+   Research Data
+============================ */
 
 export interface ResearchData {
   news: string[];
+
   opportunities: string[];
+
   risks: string[];
+
   sentiment: string;
 }
 
-// ============================================================================
-// Final Recommendation
-// ============================================================================
+/* ============================
+   Investment Decision
+============================ */
 
-export interface Recommendation {
-  decision: "INVEST" | "PASS";
+export interface InvestmentDecision {
+  decision: "BUY" | "HOLD" | "SELL";
+
   confidence: number;
+
   reasoning: string;
+
+  rawResponse: string;
 }
 
-// ============================================================================
-// LangGraph Shared State
-// ============================================================================
+/* ============================
+   Graph State
+============================ */
 
-export interface GraphState {
-  companyName: string;
+export const GraphState = Annotation.Root({
+  ticker: Annotation<string>(),
 
-  companyProfile?: CompanyProfile;
+  companyProfile: Annotation<CompanyProfile>(),
 
-  financialData?: FinancialData;
+  financialData: Annotation<FinancialData>(),
 
-  researchData?: ResearchData;
+  researchData: Annotation<ResearchData>(),
 
-  recommendation?: Recommendation;
-}
+  investmentDecision: Annotation<InvestmentDecision | string>(),
+
+  error: Annotation<string | null>({
+    reducer: (_, right) => right,
+    default: () => null,
+  }),
+});
+
+export type InvestmentState = typeof GraphState.State;
+
+export type InvestmentUpdate = typeof GraphState.Update;
