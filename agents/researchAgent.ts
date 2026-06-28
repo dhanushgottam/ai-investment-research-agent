@@ -5,6 +5,8 @@ export async function researchAgent(
   state: InvestmentState
 ): Promise<Partial<InvestmentState>> {
   try {
+    console.log(`🔍 Research Agent: Searching news for ${state.ticker}`);
+
     const company =
       state.companyProfile?.longName ??
       state.companyProfile?.shortName ??
@@ -12,12 +14,14 @@ export async function researchAgent(
 
     const researchData = await searchCompanyNews(company);
 
+    console.log("✅ Research Agent: Research completed.");
+
     return {
       researchData,
       error: null,
     };
   } catch (error) {
-    console.error("Research Agent Error:", error);
+    console.error("❌ Research Agent Error:", error);
 
     return {
       error:

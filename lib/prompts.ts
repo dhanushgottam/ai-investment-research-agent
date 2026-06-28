@@ -6,45 +6,89 @@ export function buildInvestmentPrompt(
   researchData: ResearchData
 ): string {
   return `
-You are a professional investment analyst.
+You are a senior Wall Street investment analyst.
 
-Your task is to analyze the company and decide whether it is a good investment.
+Analyze the following company using the provided financial data and latest market research.
 
-Company:
+==============================
+COMPANY
+==============================
 ${companyName}
 
-Financial Data
---------------
-Market Cap: ${financialData.marketCap}
-Revenue: ${financialData.revenue}
-Net Income: ${financialData.netIncome}
-PE Ratio: ${financialData.peRatio}
-EPS: ${financialData.eps}
-Debt To Equity: ${financialData.debtToEquity}
+==============================
+FINANCIAL DATA
+==============================
 
-Latest News
------------
+Market Cap:
+${financialData.marketCap}
+
+PE Ratio:
+${financialData.peRatio}
+
+EPS:
+${financialData.eps}
+
+Revenue:
+${financialData.revenue ?? "Not Available"}
+
+Net Income:
+${financialData.netIncome ?? "Not Available"}
+
+Debt To Equity:
+${financialData.debtToEquity ?? "Not Available"}
+
+==============================
+LATEST NEWS
+==============================
+
 ${researchData.news.join("\n")}
 
-Opportunities
--------------
+==============================
+OPPORTUNITIES
+==============================
+
 ${researchData.opportunities.join("\n")}
 
-Risks
------
+==============================
+RISKS
+==============================
+
 ${researchData.risks.join("\n")}
 
-Market Sentiment
-----------------
+==============================
+MARKET SENTIMENT
+==============================
+
 ${researchData.sentiment}
 
-Return your response in exactly the following format:
+========================================================
+IMPORTANT
+========================================================
 
-Decision: INVEST or PASS
+Return ONLY valid JSON.
 
-Confidence: (0-100)
+Do NOT use markdown.
 
-Reasoning:
-(Explain your reasoning in detail.)
+Do NOT use code blocks.
+
+Return exactly this schema:
+
+{
+  "decision":"BUY | HOLD | SELL",
+  "confidence":90,
+  "overview":"...",
+  "financialAnalysis":"...",
+  "strengths":[
+      "...",
+      "..."
+  ],
+  "risks":[
+      "...",
+      "..."
+  ],
+  "reasoning":"..."
+}
+
+The response MUST be valid JSON.
 `;
 }

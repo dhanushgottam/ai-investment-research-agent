@@ -55,9 +55,15 @@ export interface InvestmentDecision {
 
   confidence: number;
 
-  reasoning: string;
+  overview: string;
 
-  rawResponse: string;
+  financialAnalysis: string;
+
+  strengths: string[];
+
+  risks: string[];
+
+  reasoning: string;
 }
 
 /* ============================
@@ -73,7 +79,7 @@ export const GraphState = Annotation.Root({
 
   researchData: Annotation<ResearchData>(),
 
-  investmentDecision: Annotation<InvestmentDecision | string>(),
+  investmentDecision: Annotation<InvestmentDecision>(),
 
   error: Annotation<string | null>({
     reducer: (_, right) => right,

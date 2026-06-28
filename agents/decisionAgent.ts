@@ -1,57 +1,40 @@
 import { InvestmentState } from "@/types/graphState";
 import { askGemini } from "@/services/geminiService";
+import { buildInvestmentPrompt } from "@/lib/prompts";
 
 export async function decisionAgent(
   state: InvestmentState
 ): Promise<Partial<InvestmentState>> {
   try {
-    const prompt = `
-You are an expert investment analyst.
+    console.log(`🤖 Decision Agent: Generating recommendation...`);
 
-Analyze the following company information and provide a professional investment recommendation.
+    const companyName =
+      state.companyProfile?.longName ??
+      state.companyProfile?.shortName ??
+      state.ticker;
 
-Ticker:
-${state.ticker}
-
-Company Information:
-${JSON.stringify(state.companyProfile, null, 2)}
-
-Financial Metrics:
-${JSON.stringify(state.financialData, null, 2)}
-
-Latest Research:
-${JSON.stringify(state.researchData, null, 2)}
-
-Please provide:
-
-1. Company Overview
-2. Financial Analysis
-3. Positive Factors
-4. Risks
-5. Overall Recommendation
-6. Confidence Score (0-100)
-
-Finally finish with exactly one of:
-
-BUY
-HOLD
-SELL
-`;
+    const prompt = buildInvestmentPrompt(
+      companyName,
+      state.financialData,
+      state.researchData
+    );
 
     const investmentDecision = await askGemini(prompt);
+
+    console.log("✅ Decision Agent: Recommendation generated.");
 
     return {
       investmentDecision,
       error: null,
     };
   } catch (error) {
-    console.error("Decision Agent Error:", error);
+    console.error("❌ Decision Agent Error:", error);
 
     return {
       error:
         error instanceof Error
           ? error.message
-          : "Failed to generate investment decision.",
+          : "Failed to generate investment recommendation.",
     };
   }
 }
