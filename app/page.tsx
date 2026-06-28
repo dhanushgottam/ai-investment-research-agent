@@ -126,50 +126,42 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col">
-      <div className="py-10 text-center">
-        <h1 className="text-5xl font-bold text-white">
-          AI Investment Assistant
-        </h1>
+    <div className="chat-root mx-auto">
+      <div className="chat-box">
+        <div className="messages">
+          {messages.map((msg, index) => {
+            if (msg.type === "analysis") {
+              return (
+                <RecommendationCard
+                  key={index}
+                  company={
+                    msg.analysis.company?.longName ??
+                    msg.analysis.company?.shortName ??
+                    "Company"
+                  }
+                  recommendation={
+                    msg.analysis.recommendation
+                  }
+                />
+              );
+            }
 
-        <p className="mt-4 text-slate-400">
-          Analyze companies or ask finance questions.
-        </p>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-6">
-        {messages.map((msg, index) => {
-          if (msg.type === "analysis") {
             return (
-              <RecommendationCard
+              <ChatMessage
                 key={index}
-                company={
-                  msg.analysis.company?.longName ??
-                  msg.analysis.company?.shortName ??
-                  "Company"
-                }
-                recommendation={
-                  msg.analysis.recommendation
-                }
+                role={msg.role}
+                message={msg.message}
               />
             );
-          }
+          })}
 
-          return (
-            <ChatMessage
-              key={index}
-              role={msg.role}
-              message={msg.message}
-            />
-          );
-        })}
+          {loading && <ThinkingMessage />}
+          <div ref={bottomRef} />
+        </div>
 
-        {loading && <ThinkingMessage />}
-        <div ref={bottomRef} />
-      </div>
-
-      <div className="sticky bottom-0 mt-8 bg-slate-950 py-6">
-        <ChatInput onSend={handleSend} />
+        <div className="input-area">
+          <ChatInput onSend={handleSend} />
+        </div>
       </div>
     </div>
   );

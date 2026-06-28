@@ -31,6 +31,13 @@ export default function RootLayout({
             margin: "0 auto",
           }}
         >
+          <header className="site-header" style={{ marginBottom: 12 }}>
+            <div>
+              <h1 className="text-2xl font-bold">AI Investment Assistant</h1>
+              <p className="text-sm text-slate-400">Analyze companies or ask finance questions.</p>
+            </div>
+          </header>
+
           {children}
         </main>
       </body>

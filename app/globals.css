@@ -82,3 +82,124 @@ a {
 .animate-fadeIn {
   animation: fadeIn .35s ease;
 }
+
+/* Chat UI additions */
+:root {
+  --chat-width: 900px;
+  --chat-bg: linear-gradient(180deg, rgba(15,23,42,0.6), rgba(2,6,23,0.6));
+}
+
+.chat-root {
+  width: 100%;
+  max-width: var(--chat-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 85vh; /* reduced height to make chat box less tall */
+  max-height: 920px;
+}
+
+.chat-box {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  overflow: hidden;
+  background: var(--chat-bg);
+  border-radius: 12px;
+  border: 3px solid var(--border);
+}
+
+.messages {
+  flex: 1 1 auto;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 8px;
+}
+
+.message-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.message--user {
+  justify-content: flex-end;
+}
+
+.message--assistant {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 78%;
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 18px rgba(2,6,23,0.6);
+}
+
+.bubble.user {
+  background: linear-gradient(90deg,#2563eb,#06b6d4);
+  color: white;
+}
+
+.bubble.assistant {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 10px;
+}
+
+.input-area {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.01);
+}
+
+@media (max-width: 640px) {
+  .chat-root {
+    height: calc(100vh - 120px);
+    max-height: none;
+  }
+}
+
+/* Site header (top-left) */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.site-header p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}

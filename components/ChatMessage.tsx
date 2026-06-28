@@ -10,22 +10,18 @@ export default function ChatMessage({
   const isUser = role === "user";
 
   return (
-    <div
-      className={`flex w-full ${
-        isUser ? "justify-end" : "justify-start"
-      }`}
-    >
-      <div
-        className={`max-w-3xl rounded-2xl px-5 py-4 shadow-md ${
-          isUser
-            ? "bg-blue-600 text-white"
-            : "bg-slate-900 border border-slate-700 text-slate-100"
-        }`}
-      >
+    <div className={`message-row ${isUser ? "message--user" : "message--assistant"}`}>
+      {!isUser && (
+        <div className="avatar bg-slate-800 text-slate-200">🤖</div>
+      )}
+
+      <div className={`bubble ${isUser ? "user" : "assistant"}`}>
         <p className="whitespace-pre-wrap leading-7">
           {message}
         </p>
       </div>
+
+      {isUser && <div className="avatar bg-blue-600 text-white">U</div>}
     </div>
   );
 }
