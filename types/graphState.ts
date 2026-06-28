@@ -90,3 +90,23 @@ export const GraphState = Annotation.Root({
 export type InvestmentState = typeof GraphState.State;
 
 export type InvestmentUpdate = typeof GraphState.Update;
+
+/* ============================
+   AI Intent Router
+============================ */
+
+export type UserIntent =
+  | "investment_analysis"
+  | "general_chat"
+  | "education"
+  | "comparison";
+
+export interface IntentResult {
+  intent: UserIntent;
+
+  company?: string;
+
+  companies?: string[];
+
+  response?: string;
+}

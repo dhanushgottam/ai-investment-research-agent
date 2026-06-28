@@ -1,12 +1,17 @@
-import { InvestmentState } from "@/types/graphState";
-import { askGemini } from "@/services/geminiService";
+import {
+  InvestmentDecision,
+  InvestmentState,
+} from "@/types/graphState";
+
+import { askGeminiJSON } from "@/services/geminiService";
+
 import { buildInvestmentPrompt } from "@/lib/prompts";
 
 export async function decisionAgent(
   state: InvestmentState
 ): Promise<Partial<InvestmentState>> {
   try {
-    console.log(`🤖 Decision Agent: Generating recommendation...`);
+    console.log("🤖 Decision Agent");
 
     const companyName =
       state.companyProfile?.longName ??
@@ -19,22 +24,23 @@ export async function decisionAgent(
       state.researchData
     );
 
-    const investmentDecision = await askGemini(prompt);
-
-    console.log("✅ Decision Agent: Recommendation generated.");
+    const investmentDecision =
+      await askGeminiJSON<InvestmentDecision>(
+        prompt
+      );
 
     return {
       investmentDecision,
       error: null,
     };
   } catch (error) {
-    console.error("❌ Decision Agent Error:", error);
+    console.error("Decision Agent Error:", error);
 
     return {
       error:
         error instanceof Error
           ? error.message
-          : "Failed to generate investment recommendation.",
+          : "Decision Agent Failed",
     };
   }
 }

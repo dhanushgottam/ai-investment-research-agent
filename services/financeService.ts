@@ -3,6 +3,9 @@ import { getCompanyFinancialData } from "@/lib/yahooFinance";
 export async function getCompanyQuote(symbol: string) {
   try {
     const quote = await getCompanyFinancialData(symbol);
+    if (!quote) {
+      throw new Error(`No financial data found for ${symbol}`);
+    }
 
     return {
       marketCap: quote.marketCap ?? 0,

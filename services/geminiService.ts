@@ -1,36 +1,59 @@
 import { gemini } from "@/lib/gemini";
-import { InvestmentDecision } from "@/types/graphState";
 
-export async function askGemini(
-  prompt: string
-): Promise<InvestmentDecision> {
+/* ==========================================
+   Plain Text Response
+========================================== */
+
+export async function askGemini(prompt: string): Promise<string> {
   try {
     const response = await gemini.invoke(prompt);
 
-    let text = "";
 
     if (typeof response.content === "string") {
-      text = response.content;
-    } else {
-      text = response.content
-        .map((block) =>
-          typeof block === "string"
-            ? block
-            : "text" in block
-            ? block.text
-            : ""
-        )
-        .join("\n");
+      return response.content;
     }
 
-    const decision = JSON.parse(text) as InvestmentDecision;
-
-    return decision;
+    return response.content
+      .map((item: any) =>
+        typeof item === "string"
+          ? item
+          : item.text ?? ""
+      )
+      .join("");
   } catch (error) {
-    console.error("Gemini Service Error:", error);
+    console.error("Gemini Error:", error);
 
-    throw new Error(
-      "Failed to generate structured investment recommendation."
-    );
+    throw new Error("Failed to generate response.");
+  }
+}
+
+/* ==========================================
+   JSON Response
+========================================== */
+
+export async function askGeminiJSON<T>(
+  prompt: string
+): Promise<T> {
+  const text = await askGemini(prompt);
+
+  console.log("========== GEMINI RAW ==========");
+  console.log(text);
+  console.log("================================");
+
+  try {
+    const cleaned = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    console.log("========== CLEANED ==========");
+    console.log(cleaned);
+    console.log("=============================");
+
+    return JSON.parse(cleaned) as T;
+  } catch (error) {
+    console.error("Gemini JSON Parse Error:", error);
+
+    throw new Error("Gemini returned invalid JSON.");
   }
 }

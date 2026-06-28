@@ -2,44 +2,91 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { investmentGraph } from "@/graph/investmentGraph";
 
-const TICKER_REGEX = /^[A-Za-z]{1,10}$/;
+import { detectIntent } from "@/lib/intentRouter";
+import { resolveTicker } from "@/lib/companyResolver";
+
+import { askGemini } from "@/services/geminiService";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const ticker = body?.ticker?.trim().toUpperCase();
+    const message = body?.ticker?.trim();
+
+    if (!message) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please enter a message.",
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log("User:", message);
+
+    const intent = await detectIntent(message);
+
+    console.log("Detected Intent:", JSON.stringify(intent, null, 2));
+
+    /* ============================
+       General Chat
+    ============================ */
+
+    if (
+      intent.intent === "general_chat" ||
+      intent.intent === "education"
+    ) {
+      const response = await askGemini(message);
+
+      return NextResponse.json({
+        success: true,
+        type: "chat",
+        response,
+      });
+    }
+
+    /* ============================
+       Company Comparison
+    ============================ */
+
+    if (intent.intent === "comparison") {
+      return NextResponse.json({
+        success: true,
+        type: "chat",
+        response:
+          "🚧 Company comparison is coming in Phase 5.",
+      });
+    }
+
+    /* ============================
+       Investment Analysis
+    ============================ */
+
+    const ticker = await resolveTicker(
+      intent.company ?? message
+    );
 
     if (!ticker) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Ticker symbol is required.",
-        },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        success: true,
+        type: "chat",
+        response:
+          "I couldn't identify that company. Please try another company name.",
+      });
     }
 
-    if (!TICKER_REGEX.test(ticker)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid ticker symbol.",
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log(`🚀 Starting analysis for ${ticker}`);
+    console.log("Ticker:", ticker);
 
     const result = await investmentGraph.invoke({
       ticker,
     });
 
-    console.log(`✅ Analysis completed for ${ticker}`);
-
+    console.log("FINAL RESULT");
+    console.dir(result, { depth: null });
     return NextResponse.json({
       success: true,
+      type: "analysis",
       analysis: {
         ticker: result.ticker,
         company: result.companyProfile,
@@ -49,7 +96,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("❌ Research API Error:", error);
+    console.error(error);
 
     return NextResponse.json(
       {
