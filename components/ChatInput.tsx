@@ -1,46 +1,80 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowUp } from "lucide-react";
 
-interface ChatInputProps {
-  onSend: (message: string) => void;
+interface Props {
+  onSend(message: string): void;
 }
 
-export default function ChatInput({ onSend }: ChatInputProps) {
+export default function ChatInput({ onSend }: Props) {
   const [message, setMessage] = useState("");
 
-  const handleSend = () => {
-    const text = message.trim();
+  function send() {
+    if (!message.trim()) return;
 
-    if (!text) return;
-
-    onSend(text);
-
+    onSend(message);
     setMessage("");
-  };
+  }
 
   return (
-    <div className="w-full rounded-2xl border border-slate-700 bg-slate-900 p-3 shadow-lg">
-      <div className="flex items-center gap-3">
-        <input
+    <div className="sticky bottom-4 w-full">
+
+      <div className="relative rounded-[30px] border border-slate-700 bg-[#2f2f2f] shadow-2xl">
+
+        <textarea
+          rows={1}
           value={message}
+          placeholder="Ask about any company or finance topic..."
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSend();
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              send();
             }
           }}
-          placeholder="Ask anything... e.g. Should I invest in Apple?"
-          className="flex-1 bg-transparent text-white placeholder:text-slate-500 outline-none"
+          className="
+          min-h-[64px]
+          max-h-48
+          w-full
+          resize-none
+          rounded-[30px]
+          bg-transparent
+          py-5
+          pl-6
+          pr-20
+          text-white
+          placeholder:text-slate-400
+          outline-none
+          "
         />
 
         <button
-          onClick={handleSend}
-          className="rounded-xl bg-blue-600 px-5 py-2 font-semibold text-white transition hover:bg-blue-500"
+          onClick={send}
+          disabled={!message.trim()}
+          className="
+          absolute
+          bottom-3
+          right-3
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-full
+          bg-emerald-500
+          text-white
+          transition
+          hover:bg-emerald-400
+          disabled:bg-slate-600
+          disabled:cursor-not-allowed
+          "
         >
-          ↑
+          <ArrowUp size={18} />
         </button>
+
       </div>
+
     </div>
   );
 }

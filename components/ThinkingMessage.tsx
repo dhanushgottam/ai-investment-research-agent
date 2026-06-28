@@ -1,33 +1,43 @@
 export default function ThinkingMessage() {
-  const steps = [
-    "Company Agent",
-    "Financial Agent",
-    "Research Agent",
-    "Decision Agent",
-  ];
-
   return (
-    <div className="w-full rounded-2xl border border-slate-700 bg-slate-900 p-6">
-      <div className="mb-6 flex items-center gap-2">
-        <div className="h-3 w-3 animate-pulse rounded-full bg-blue-500"></div>
+    <div className="flex items-start gap-3 animate-fadeIn">
 
-        <h2 className="text-lg font-semibold text-white">
-          Thinking...
-        </h2>
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-lg">
+        🤖
       </div>
 
-      <div className="space-y-4">
-        {steps.map((step) => (
-          <div
-            key={step}
-            className="flex items-center gap-3 text-slate-300"
-          >
-            <div className="h-2 w-2 rounded-full bg-green-500"></div>
+      <div className="rounded-2xl bg-slate-800 px-5 py-4">
 
-            <span>{step}</span>
+        <div className="flex items-center gap-2">
+
+          <span className="text-slate-300">
+            Thinking
+          </span>
+
+          <div className="flex gap-1">
+
+            <span className="h-2 w-2 animate-bounce rounded-full bg-white" />
+
+            <span
+              className="h-2 w-2 animate-bounce rounded-full bg-white"
+              style={{
+                animationDelay: "0.2s",
+              }}
+            />
+
+            <span
+              className="h-2 w-2 animate-bounce rounded-full bg-white"
+              style={{
+                animationDelay: "0.4s",
+              }}
+            />
+
           </div>
-        ))}
+
+        </div>
+
       </div>
+
     </div>
   );
 }

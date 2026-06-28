@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
@@ -34,6 +34,12 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatItem[]>([]);
 
   const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+    behavior: "smooth",
+  });
+}, [messages, loading]);
 
   async function handleSend(message: string) {
     setMessages((prev) => [
@@ -159,6 +165,7 @@ export default function Home() {
         })}
 
         {loading && <ThinkingMessage />}
+        <div ref={bottomRef} />
       </div>
 
       <div className="sticky bottom-0 mt-8 bg-slate-950 py-6">
